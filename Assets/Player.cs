@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public Player_MoveState moveState  { get; private set; }
 
     public Vector2 moveInput { get; private set; }
+    
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -19,26 +20,20 @@ public class Player : MonoBehaviour
         stateMachine = new StateMachine();
         input = new PlayerInputSet();
         
-        idleState = new Player_IdleState(this, stateMachine, "idle");
-        moveState = new Player_MoveState(this, stateMachine, "move");
-        
+        idleState = new Player_IdleState(this, stateMachine, GlobalStringsConfig.Animations.Idle);
+        moveState = new Player_MoveState(this, stateMachine, GlobalStringsConfig.Animations.Move);
     }
 
     private void OnEnable()
     {
-        // input.Player.Movement.started -> input just began/ when we first press the button
-        // input.Player.Movement.performed -> when we hold the button 
-        // input.Player.Movement.canceled -> when we release the button
         input.Enable();
         
-        input.Player.Movement.performed +=ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled +=ctx => moveInput = Vector2.zero;
-        
+        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
     }
 
     private void OnDisable()
     {
-        // when player is dead we want to disable the input
         input.Disable();
     }
 
