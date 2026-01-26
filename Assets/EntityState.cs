@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class EntityState
 {
@@ -7,6 +8,7 @@ public abstract class EntityState
     protected string animBoolName;
     protected Animator anim;
     protected Rigidbody2D rb;
+    protected PlayerInputSet input;
     
     public EntityState(Player player, StateMachine stateMachine, string animBoolName)
     {
@@ -16,6 +18,7 @@ public abstract class EntityState
         
         anim = player.anim;
         rb = player.rb;
+        input = player.input;
     }
     
     public virtual void Enter()
@@ -26,8 +29,7 @@ public abstract class EntityState
 
     public virtual void Update()
     {
-        // Run the logic of the state
-        Debug.Log("I updated " + animBoolName);
+        anim.SetFloat(GlobalStringsConfig.Animations.yVelocity, rb.linearVelocity.y);
     }
 
     public virtual void Exit()
