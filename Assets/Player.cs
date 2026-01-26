@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public Player_MoveState moveState  { get; private set; }
     public Player_JumpState jumpState  { get; private set; }
     public Player_FallState fallState  { get; private set; }
+    public Player_WallSlideState wallSlideState  { get; private set; }
 
     
     [Header("Movement Details")]
@@ -21,18 +22,23 @@ public class Player : MonoBehaviour
     public float jumpForce = 12;
     [Range(0, 1)]
     public float inAirMultiplier = 0.65f; // should be from 0-1
+    [Range(0, 1)]
+    public float wallSlideSlowMultiplier = 0.3f;
     private bool facingRight = true;
+    private int facingDirection = 1;
     public Vector2 moveInput { get; private set; }
 
     [Header("Collision Detection")] 
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask groundType;
-    [SerializeField]  private float coyoteTime = 0.1f;
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float wallCheckDistance; 
+    public bool groundDetected { get; private set; }
+    public bool wallDetected { get; private set; }
     
     public float coyoteTimer { get; private set; }
-   
     
-    public bool groundDetected { get; private set; }
+
 
     private void SetRBValues()
     {
@@ -61,6 +67,7 @@ public class Player : MonoBehaviour
         moveState = new Player_MoveState(this, stateMachine, GlobalStringsConfig.Animations.Move);
         jumpState = new Player_JumpState(this, stateMachine, GlobalStringsConfig.Animations.JumpFall);
         fallState = new Player_FallState(this, stateMachine, GlobalStringsConfig.Animations.JumpFall);
+        wallSlideState = new Player_WallSlideState(this, stateMachine, GlobalStringsConfig.Animations.WallSlide);
     }
 
     private void OnEnable()
@@ -102,22 +109,31 @@ public class Player : MonoBehaviour
         else if (xVelocity < 0 && facingRight == true)
             Flip();
     }
-    private void Flip()
+    public void Flip()
     {
         transform.Rotate(0f, 180f, 0f);
         facingRight = !facingRight;
+        // We draw a gizmo when we try to detect walls and this line has to flip as well 
+        facingDirection *= -1;
     }
 
     private void HandleCollisionDetection()
     {
         groundDetected = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundType);
         coyoteTimer = groundDetected ? coyoteTime : coyoteTimer - Time.deltaTime;
+        
+        var direction = Vector2.right * facingDirection; // ensure we change direction when we flip
+        wallDetected = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundType);
     }
     private void OnDrawGizmos()
     {
         var  startPoint = transform.position;
-        var endPoint = transform.position + new Vector3(0, -groundCheckDistance, 0);
+        var groundEndPoint = transform.position + new Vector3(0, -groundCheckDistance, 0);
         
-        Gizmos.DrawLine(startPoint,endPoint );
+        Gizmos.DrawLine(startPoint,groundEndPoint );
+        
+        // we multiply with facing direction to make sure we flip the line whenever the character flips
+        var wallEndPoint = transform.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
+        Gizmos.DrawLine(startPoint, wallEndPoint);
     }
 }

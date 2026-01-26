@@ -12,5 +12,8 @@ public class Player_FallState : EntityState
         // if player detecting the ground below, go to idle state
         if(player.groundDetected)
             stateMachine.ChangeState(player.idleState);
+        
+        if (player.wallDetected)
+            stateMachine.ChangeState(player.wallSlideState);
     }
 }

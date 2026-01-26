@@ -11,6 +11,7 @@ public class Player_GroundedState : EntityState
         base.Update();
         
         // When character drops we need to display the falling animation
+        // TODO: if we find a glitch when wallslide -> to ground then we can fix it by adding && player.groundDetected == false in the condition
         if (rb.linearVelocity.y < -0.1f && player.coyoteTimer <= 0f)
             stateMachine.ChangeState(player.fallState);
         
