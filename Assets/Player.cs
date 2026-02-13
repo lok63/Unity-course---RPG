@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public Player_FallState fallState  { get; private set; }
     public Player_WallSlideState wallSlideState  { get; private set; }
     public Player_WallJumpState wallJumpState  { get; private set; }
+    public Player_DashState dashState  { get; private set; }
 
     
     [Header("Movement Details")]
@@ -29,6 +30,9 @@ public class Player : MonoBehaviour
     private bool facingRight = true;
     public int facingDirection { get; private set; } = 1;
     public Vector2 moveInput { get; private set; }
+    [Space]
+    public float dashDuration = 0.25f;
+    public float dashSpeed = 20;
 
     [Header("Collision Detection")] 
     [SerializeField] private float groundCheckDistance;
@@ -70,7 +74,8 @@ public class Player : MonoBehaviour
         jumpState = new Player_JumpState(this, stateMachine, GlobalStringsConfig.Animations.JumpFall);
         fallState = new Player_FallState(this, stateMachine, GlobalStringsConfig.Animations.JumpFall);
         wallSlideState = new Player_WallSlideState(this, stateMachine, GlobalStringsConfig.Animations.WallSlide);
-        wallJumpState = new Player_WallJumpState(this, stateMachine, GlobalStringsConfig.Animations.WallJump);
+        wallJumpState = new Player_WallJumpState(this, stateMachine, GlobalStringsConfig.Animations.JumpFall);
+        dashState = new Player_DashState(this, stateMachine, GlobalStringsConfig.Animations.Dash);
     }
 
     private void OnEnable()

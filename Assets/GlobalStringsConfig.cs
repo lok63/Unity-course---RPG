@@ -6,8 +6,7 @@ public static class GlobalStringsConfig
         public const string Move = "move";
         public const string JumpFall = "jumpFall";
         public const string WallSlide = "wallSlide";
-        public const string WallJump = "wallJump";
-        
+        public const string Dash = "dash";
         public const string yVelocity = "yVelocity";
     }
 
