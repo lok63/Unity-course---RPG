@@ -9,6 +9,7 @@ public class Player_BasicAttackState : EntityState
     private int comboIndexLimit=3;
 
     private float lastTimeAttacked;
+    private bool comboAttackQueued;
     
     
     public Player_BasicAttackState(Player player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
@@ -16,12 +17,16 @@ public class Player_BasicAttackState : EntityState
         // TODO: Change this to become a fixed list of combos
         // rename the attackVelocity to become attackStepForwardVelocities
         if (comboIndexLimit != player.attackVelocity.Length)
+        {
+            Debug.LogWarning("Adjusted combo limit to match attack velocity array!");
             comboIndexLimit = player.attackVelocity.Length;
+        }
     }
 
     public override void Enter()
     {
         base.Enter();
+        comboAttackQueued = false;
         ResetComboIndex();
         atackVelocityTimer = player.attackVelocityDuration;
         anim.SetInteger(GlobalStringsConfig.Animations.BasicAttackIndex, comboIndex);
@@ -33,8 +38,27 @@ public class Player_BasicAttackState : EntityState
     {
         base.Update();
         StopMovingForward();
+
+        if (input.Player.Attack.WasPressedThisFrame())
+            // If I decide to use this instead of QueueNextAttack() this won't add the idle anim after we finish the combo
+            // and it will allow th user to spam the combo. 
+            // comboAttackQueed = true; 
+            QueueNextAttack(); // only queue if there are more attacks left in the combo, this will make sure the idle is played when attack 
+
         if (triggerCalled)
-            stateMachine.ChangeState(player.idleState);
+        {
+            if (comboAttackQueued)
+            {
+                // When we trigger ChangeState it calls Exit() and Enter() on the same frame
+                // so we want to make the anim bool on this frame 
+                anim.SetBool(animBoolName, false);
+                // After we call the coroutine it will call ChangeState again so there
+                // it will set back the animBoolName to true
+                player.EnterAttackStateWithDelay();
+            }
+            else
+                stateMachine.ChangeState(player.idleState);
+        }
     }
 
     public override void Exit()
@@ -43,6 +67,16 @@ public class Player_BasicAttackState : EntityState
         comboIndex++;
         // remember time when we last attacked
         lastTimeAttacked = Time.time;
+    }
+
+    /**
+    * this will make sure the idle is played when attack combo list is completed
+    */
+    private void QueueNextAttack()
+    {
+        //Chain the next attack if there is another combo in the index and we are not in the last attack
+        if (comboIndex < comboIndexLimit)
+            comboAttackQueued = true;
     }
 
     private void StopMovingForward()

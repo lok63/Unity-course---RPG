@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     public Vector2[] attackVelocity;
     public float attackVelocityDuration=.1f;
     public float comboResetTimeWindow = 1;
+    private Coroutine queuedAttackCo;
     
     [Header("Movement Details")]
     public float moveSpeed= 8;
@@ -108,6 +109,21 @@ public class Player : MonoBehaviour
         stateMachine.UpdateActiveState();
     }
 
+    public void EnterAttackStateWithDelay()
+    {
+        // Make sure if a coroutine is active to stop the previous one if any
+        // this avoid multiple attack states happening on the same time if the players queues them together
+        // and only one is been executed
+        if(queuedAttackCo != null)
+            StopCoroutine(queuedAttackCo);
+        queuedAttackCo = StartCoroutine(EnterAttackStateWithDelayedCo());
+
+    }
+    private IEnumerator EnterAttackStateWithDelayedCo()
+    {
+        yield return new WaitForEndOfFrame();
+        stateMachine.ChangeState(basicAttackState);
+    }
     public void CallAnimationTrigger()
     {
         stateMachine.currentState.CallAnimationTrigger();
