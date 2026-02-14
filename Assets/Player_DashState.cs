@@ -13,7 +13,7 @@ public class Player_DashState : EntityState
     {
         base.Enter();
         
-        dashDirection = player.facingDirection;
+        SetDashDirection();
         
         stateTimer = player.dashDuration;
         // if we don't cache the original gravity scale and reset it on the exit
@@ -22,6 +22,15 @@ public class Player_DashState : EntityState
         originalGravityScale = rb.gravityScale;
         rb.gravityScale = 0;
     }
+    
+    private void SetDashDirection()
+    {
+        if (player.moveInput.x != 0)
+            dashDirection = (int)player.moveInput.x;
+        else
+            dashDirection = player.facingDirection;
+    }
+
 
     public override void Update()
     {

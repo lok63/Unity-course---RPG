@@ -37,8 +37,8 @@ public class Player : MonoBehaviour
     public int facingDirection { get; private set; } = 1;
     public Vector2 moveInput { get; private set; }
     [Space]
-    public float dashDuration = 0.25f;
-    public float dashSpeed = 20;
+    public float dashDuration = 0.15f;
+    public float dashSpeed = 25;
 
     [Header("Collision Detection")] 
     [SerializeField] private float groundCheckDistance;
