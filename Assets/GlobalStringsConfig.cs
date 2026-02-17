@@ -8,8 +8,14 @@ public static class GlobalStringsConfig
         public const string WallSlide = "wallSlide";
         public const string Dash = "dash";
         public const string BasicAttack = "basicAttack";
+        public const string JumpAttack = "jumpAttack";
         public const string BasicAttackIndex = "basicAttackIndex";
         public const string yVelocity = "yVelocity";
+        
+        // triggers
+        public const string JumpAttackTrigger = "jumpAttackTrigger";
+
+        
     }
 
     public static class LayerMasks

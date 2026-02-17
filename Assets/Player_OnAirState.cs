@@ -14,5 +14,8 @@ public class Player_OnAirState : EntityState
         var yVelocity = rb.linearVelocity.y;
         if(player.moveInput.x != 0 )
             player.SetVelocity(xVelocity, yVelocity);
+        
+        if(input.Player.Attack.WasPressedThisFrame())
+            stateMachine.ChangeState(player.jumpAttackState);
     }
 }
