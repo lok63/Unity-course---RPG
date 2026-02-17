@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask groundType;
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float wallCheckDistance; 
+    [SerializeField] private Transform primaryWallCheck;
+    [SerializeField] private Transform secondaryWallCheck;
     public bool groundDetected { get; private set; }
     public bool wallDetected { get; private set; }
     
@@ -162,7 +164,8 @@ public class Player : MonoBehaviour
         coyoteTimer = groundDetected ? coyoteTime : coyoteTimer - Time.deltaTime;
         
         var direction = Vector2.right * facingDirection; // ensure we change direction when we flip
-        wallDetected = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundType);
+        wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType)
+                       && Physics2D.Raycast(secondaryWallCheck.position, direction, wallCheckDistance, groundType);
     }
     private void OnDrawGizmos()
     {
@@ -172,7 +175,9 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(startPoint,groundEndPoint );
         
         // we multiply with facing direction to make sure we flip the line whenever the character flips
-        var wallEndPoint = transform.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
-        Gizmos.DrawLine(startPoint, wallEndPoint);
+        var wallEndPointPrimary = primaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
+        Gizmos.DrawLine(primaryWallCheck.position, wallEndPointPrimary);
+        var wallEndPointSecondary = secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
+        Gizmos.DrawLine(secondaryWallCheck.position, wallEndPointSecondary);
     }
 }
