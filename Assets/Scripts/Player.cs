@@ -2,14 +2,10 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Player : MonoBehaviour
+public class Player : Entity
 {
-    public Animator anim { get; private set; }
-    public Rigidbody2D rb { get; private set; }
-    
     public PlayerInputSet input { get; private set; }
-    private StateMachine stateMachine;
-    
+
     public Player_IdleState idleState { get; private set; }
     public Player_MoveState moveState  { get; private set; }
     public Player_JumpState jumpState  { get; private set; }
@@ -19,6 +15,7 @@ public class Player : MonoBehaviour
     public Player_DashState dashState  { get; private set; }
     public Player_BasicAttackState basicAttackState { get; private set; }
     public Player_JumpAttackState jumpAttackState { get; private set; }
+    
     
     [Header("Attack Details")]
     public Vector2[] attackVelocity;
@@ -35,48 +32,15 @@ public class Player : MonoBehaviour
     public float inAirMultiplier = 0.65f; // should be from 0-1
     [Range(0, 1)]
     public float wallSlideSlowMultiplier = 0.3f;
-    private bool facingRight = true;
-    public int facingDirection { get; private set; } = 1;
     public Vector2 moveInput { get; private set; }
     [Space]
     public float dashDuration = 0.15f;
     public float dashSpeed = 25;
 
-    [Header("Collision Detection")] 
-    [SerializeField] private float groundCheckDistance;
-    [SerializeField] private LayerMask groundType;
-    [SerializeField] private float coyoteTime = 0.1f;
-    [SerializeField] private float wallCheckDistance; 
-    [SerializeField] private Transform primaryWallCheck;
-    [SerializeField] private Transform secondaryWallCheck;
-    public bool groundDetected { get; private set; }
-    public bool wallDetected { get; private set; }
-    
-    public float coyoteTimer { get; private set; }
-    
-
-
-    private void SetRBValues()
+    protected override void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        base.Awake();
         
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.linearDamping = 0.1f;
-        rb.gravityScale = 3.5f;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        rb.sleepMode = RigidbodySleepMode2D.StartAwake;
-        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-
-    }
-    private void Awake()
-    {
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        
-        // SetRBValues();
-        
-        stateMachine = new StateMachine();
         input = new PlayerInputSet();
         
         idleState = new Player_IdleState(this, stateMachine, GlobalStringsConfig.Animations.Idle);
@@ -88,33 +52,14 @@ public class Player : MonoBehaviour
         dashState = new Player_DashState(this, stateMachine, GlobalStringsConfig.Animations.Dash);
         basicAttackState = new Player_BasicAttackState(this, stateMachine, GlobalStringsConfig.Animations.BasicAttack);
         jumpAttackState = new Player_JumpAttackState(this, stateMachine, GlobalStringsConfig.Animations.JumpAttack);
-        
     }
 
-    private void OnEnable()
+    protected override void Start()
     {
-        input.Enable();
-        
-        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
-    }
-
-    private void Start()
-    {
+        base.Start();
         stateMachine.Init(idleState);
     }
-
-    private void Update()
-    {
-        HandleCollisionDetection();
-        stateMachine.UpdateActiveState();
-    }
-
+    
     public void EnterAttackStateWithDelay()
     {
         // Make sure if a coroutine is active to stop the previous one if any
@@ -130,54 +75,18 @@ public class Player : MonoBehaviour
         yield return new WaitForEndOfFrame();
         stateMachine.ChangeState(basicAttackState);
     }
-    public void CallAnimationTrigger()
+    
+    private void OnEnable()
     {
-        stateMachine.currentState.CallAnimationTrigger();
+        input.Enable();
+        
+        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
     }
 
-    public void SetVelocity(float xVelocity, float yVelocity)
+    private void OnDisable()
     {
-        rb.linearVelocity = new Vector2(xVelocity, yVelocity);
-        HandleFlip(xVelocity);
+        input.Disable();
     }
 
-    private void HandleFlip(float xVelocity)
-    {
-        // if moving right and not facing right then want to flip transform
-        // if moving left and facing right then we need to flip transform
-        if (xVelocity > 0 && facingRight == false)
-            Flip();
-        else if (xVelocity < 0 && facingRight == true)
-            Flip();
-    }
-    public void Flip()
-    {
-        transform.Rotate(0f, 180f, 0f);
-        facingRight = !facingRight;
-        // We draw a gizmo when we try to detect walls and this line has to flip as well 
-        facingDirection *= -1;
-    }
-
-    private void HandleCollisionDetection()
-    {
-        groundDetected = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundType);
-        coyoteTimer = groundDetected ? coyoteTime : coyoteTimer - Time.deltaTime;
-        
-        var direction = Vector2.right * facingDirection; // ensure we change direction when we flip
-        wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType)
-                       && Physics2D.Raycast(secondaryWallCheck.position, direction, wallCheckDistance, groundType);
-    }
-    private void OnDrawGizmos()
-    {
-        var  startPoint = transform.position;
-        var groundEndPoint = transform.position + new Vector3(0, -groundCheckDistance, 0);
-        
-        Gizmos.DrawLine(startPoint,groundEndPoint );
-        
-        // we multiply with facing direction to make sure we flip the line whenever the character flips
-        var wallEndPointPrimary = primaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
-        Gizmos.DrawLine(primaryWallCheck.position, wallEndPointPrimary);
-        var wallEndPointSecondary = secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
-        Gizmos.DrawLine(secondaryWallCheck.position, wallEndPointSecondary);
-    }
 }
