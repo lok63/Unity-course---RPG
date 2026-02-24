@@ -135,7 +135,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -155,9 +155,9 @@ TextureImporter:
       name: Skeleton Idle_1
       rect:
         serializedVersion: 2
-        x: 22
+        x: 24
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -177,9 +177,9 @@ TextureImporter:
       name: Skeleton Idle_2
       rect:
         serializedVersion: 2
-        x: 44
+        x: 48
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -199,9 +199,9 @@ TextureImporter:
       name: Skeleton Idle_3
       rect:
         serializedVersion: 2
-        x: 66
+        x: 72
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -221,9 +221,9 @@ TextureImporter:
       name: Skeleton Idle_4
       rect:
         serializedVersion: 2
-        x: 88
+        x: 96
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -243,9 +243,9 @@ TextureImporter:
       name: Skeleton Idle_5
       rect:
         serializedVersion: 2
-        x: 110
+        x: 120
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -265,9 +265,9 @@ TextureImporter:
       name: Skeleton Idle_6
       rect:
         serializedVersion: 2
-        x: 132
+        x: 144
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -287,9 +287,9 @@ TextureImporter:
       name: Skeleton Idle_7
       rect:
         serializedVersion: 2
-        x: 154
+        x: 168
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -309,9 +309,9 @@ TextureImporter:
       name: Skeleton Idle_8
       rect:
         serializedVersion: 2
-        x: 176
+        x: 192
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -331,9 +331,9 @@ TextureImporter:
       name: Skeleton Idle_9
       rect:
         serializedVersion: 2
-        x: 198
+        x: 216
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -353,9 +353,9 @@ TextureImporter:
       name: Skeleton Idle_10
       rect:
         serializedVersion: 2
-        x: 220
+        x: 240
         y: 0
-        width: 22
+        width: 24
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -367,28 +367,6 @@ TextureImporter:
       bones: []
       spriteID: 8830ccc7a9059bfa0800000000000000
       internalID: -5784503621931760760
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Skeleton Idle_11
-      rect:
-        serializedVersion: 2
-        x: 242
-        y: 0
-        width: 22
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cbc19cb1d88d7488f928df2b12195913
-      internalID: -1911938869
       vertices: []
       indices: 
       edges: []
@@ -410,7 +388,6 @@ TextureImporter:
       Skeleton Idle_0: 7928858964255100155
       Skeleton Idle_1: -289379152601194012
       Skeleton Idle_10: -5784503621931760760
-      Skeleton Idle_11: -1911938869
       Skeleton Idle_2: -8331204611373963175
       Skeleton Idle_3: 5974531914738200450
       Skeleton Idle_4: 1900126310482141809

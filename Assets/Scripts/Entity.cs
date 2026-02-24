@@ -13,6 +13,7 @@ public Animator anim { get; private set; }
     [Header("Collision Detection")] 
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask groundType;
+    [SerializeField] private Transform groundCheck; 
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float wallCheckDistance; 
     [SerializeField] private Transform primaryWallCheck;
@@ -73,24 +74,33 @@ public Animator anim { get; private set; }
 
     private void HandleCollisionDetection()
     {
-        groundDetected = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundType);
+        groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundType);
         coyoteTimer = groundDetected ? coyoteTime : coyoteTimer - Time.deltaTime;
-        
         var direction = Vector2.right * facingDirection; // ensure we change direction when we flip
-        wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType)
-                       && Physics2D.Raycast(secondaryWallCheck.position, direction, wallCheckDistance, groundType);
+
+        if (secondaryWallCheck != null)
+        {
+            wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType)
+                           && Physics2D.Raycast(secondaryWallCheck.position, direction, wallCheckDistance, groundType);
+        }
+        else
+            wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType);
     }
     private void OnDrawGizmos()
     {
-        var  startPoint = transform.position;
-        var groundEndPoint = transform.position + new Vector3(0, -groundCheckDistance, 0);
+        var  startPoint = groundCheck.position;
+        var groundEndPoint = groundCheck.position + new Vector3(0, -groundCheckDistance, 0);
         
         Gizmos.DrawLine(startPoint,groundEndPoint );
         
         // we multiply with facing direction to make sure we flip the line whenever the character flips
         var wallEndPointPrimary = primaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
         Gizmos.DrawLine(primaryWallCheck.position, wallEndPointPrimary);
-        var wallEndPointSecondary = secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
-        Gizmos.DrawLine(secondaryWallCheck.position, wallEndPointSecondary);
+        
+        if (secondaryWallCheck != null)
+        {
+            var wallEndPointSecondary = secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDirection, 0, 0);
+            Gizmos.DrawLine(secondaryWallCheck.position, wallEndPointSecondary);
+        }
     }
 }
