@@ -11,8 +11,8 @@ public Animator anim { get; private set; }
     public int facingDirection { get; private set; } = 1;
     
     [Header("Collision Detection")] 
+    [SerializeField] protected LayerMask groundType;
     [SerializeField] private float groundCheckDistance;
-    [SerializeField] private LayerMask groundType;
     [SerializeField] private Transform groundCheck; 
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float wallCheckDistance; 
@@ -86,7 +86,7 @@ public Animator anim { get; private set; }
         else
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, direction, wallCheckDistance, groundType);
     }
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         var  startPoint = groundCheck.position;
         var groundEndPoint = groundCheck.position + new Vector3(0, -groundCheckDistance, 0);
