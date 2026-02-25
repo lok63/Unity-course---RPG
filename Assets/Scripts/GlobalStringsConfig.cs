@@ -10,6 +10,7 @@ public static class GlobalStringsConfig
         public const string BasicAttack = "basicAttack";
         public const string JumpAttack = "jumpAttack";
         public const string BasicAttackIndex = "baiscAttackIndex";
+        public const string Attack = "attack";
         public const string yVelocity = "yVelocity";
         
         public const string moveAnimSpeedMultiplier = "moveAnimSpeedMultiplier";

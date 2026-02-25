@@ -15,6 +15,10 @@ public class EnemyState : EntityState
     public override void Update()
     {
         base.Update();
+        
+        if(Input.GetKeyDown(KeyCode.F))
+            stateMachine.ChangeState(enemy.attackState);
+        
         anim.SetFloat(GlobalStringsConfig.Animations.moveAnimSpeedMultiplier, enemy.moveAnimSpeedMultiplier);
     }
 }
