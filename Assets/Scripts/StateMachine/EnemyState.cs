@@ -20,5 +20,6 @@ public class EnemyState : EntityState
             stateMachine.ChangeState(enemy.attackState);
         
         anim.SetFloat(GlobalStringsConfig.Animations.moveAnimSpeedMultiplier, enemy.moveAnimSpeedMultiplier);
+        anim.SetFloat(GlobalStringsConfig.Animations.xVelocity,rb.linearVelocity.x);
     }
 }
