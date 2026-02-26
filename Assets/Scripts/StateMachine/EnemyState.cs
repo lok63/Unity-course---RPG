@@ -18,7 +18,11 @@ public class EnemyState : EntityState
         
         if(Input.GetKeyDown(KeyCode.F))
             stateMachine.ChangeState(enemy.attackState);
+
+        float battleAnimSpeedMultiplier = enemy.battleMoveSpeed / enemy.moveSpeed;
+        ;
         
+        anim.SetFloat(GlobalStringsConfig.Animations.battleAnimSpeedMultiplier, battleAnimSpeedMultiplier);
         anim.SetFloat(GlobalStringsConfig.Animations.moveAnimSpeedMultiplier, enemy.moveAnimSpeedMultiplier);
         anim.SetFloat(GlobalStringsConfig.Animations.xVelocity,rb.linearVelocity.x);
     }

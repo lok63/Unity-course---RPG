@@ -10,6 +10,9 @@ public class Enemy : Entity
     [Header("Battle details")]
     public float battleMoveSpeed =3;
     public float attackDistance = 2;
+    public float battleTimeDuration = 5;
+    public float minJumpBackDistance = 1;
+    public Vector2 jumpBackVelocity;
     
     [Header("Movement")] 
     public float idleTime = 2;
@@ -22,12 +25,12 @@ public class Enemy : Entity
     [SerializeField] private Transform playerCheck;
     [SerializeField] private float playerCheckDistance = 10;
     
-    public RaycastHit2D PlayerDetection()
+    public RaycastHit2D PlayerDetected()
     {
         RaycastHit2D hit = Physics2D.Raycast(playerCheck.position, Vector2.right * facingDirection, playerCheckDistance, playerType | groundType);
         
         // LayerMask.NameToLayer("Player")
-        if (hit.collider == null || hit.collider.gameObject.gameObject.layer != LayerMask.NameToLayer("Player"))
+        if (hit.collider == null || hit.collider.gameObject.gameObject.layer != LayerMask.NameToLayer(GlobalStringsConfig.LayerMasks.Player))
         {
             // this is similar to 
             // hit.collider = null
@@ -43,9 +46,10 @@ public class Enemy : Entity
         base.OnDrawGizmos();
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDirection * playerCheckDistance), playerCheck.position.y, 0));
-
-
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDirection * attackDistance), playerCheck.position.y));
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDirection * minJumpBackDistance), playerCheck.position.y));
+
     }
 }

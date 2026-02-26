@@ -4,6 +4,7 @@ using UnityEngine;
 public class Enemy_BattleState : EnemyState
 {
     private Transform player;
+    private float lastTimeWasInBattle;
     public Enemy_BattleState(Enemy enemy, StateMachine stateMachine, string animBoolName) : base(enemy, stateMachine, animBoolName)
     {
     }
@@ -13,20 +14,34 @@ public class Enemy_BattleState : EnemyState
         base.Enter();
         
         if(player == null)
-            player = enemy.PlayerDetection().transform;
+            player = enemy.PlayerDetected().transform;
+
+        if (ShouldJumpBack())
+        {
+            rb.linearVelocity = new Vector2(enemy.jumpBackVelocity.x * -DirectionToPlayer(), rb.linearVelocity.y);
+            enemy.HandleFlip(DirectionToPlayer());
+        }
     }
 
     public override void Update()
     {
         base.Update();
-        if(WithinAttackRange())
+
+        if (enemy.PlayerDetected() == true)
+            UpdateBattleTimer();
+        
+        if (BattleTimerIsOver())
+            stateMachine.ChangeState(enemy.idleState);
+        
+        if(WithinAttackRange() && enemy.PlayerDetected())
             stateMachine.ChangeState(enemy.attackState);
         else
             enemy.SetVelocity(enemy.battleMoveSpeed * DirectionToPlayer(), rb.linearVelocity.y);
     }
-
+    private void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
+    private bool BattleTimerIsOver() => Time.time > lastTimeWasInBattle + enemy.battleTimeDuration;
     private bool WithinAttackRange() => DistanceToPlayer() < enemy.attackDistance;
-
+    private bool ShouldJumpBack() => DistanceToPlayer() < enemy.minJumpBackDistance;
     private float DistanceToPlayer()
     {
         if (player == null)

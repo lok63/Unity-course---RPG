@@ -16,6 +16,7 @@ public static class GlobalStringsConfig
         public const string yVelocity = "yVelocity";
         
         public const string moveAnimSpeedMultiplier = "moveAnimSpeedMultiplier";
+        public const string battleAnimSpeedMultiplier = "battleAnimSpeedMultiplier";
         
         // triggers
         public const string JumpAttackTrigger = "jumpAttackTrigger";
@@ -32,7 +33,7 @@ public static class GlobalStringsConfig
         public static int Water => 1 << 4;             // Layer 4
         public static int UI => 1 << 5;                // Layer 5
         public static int Ground => 1 << 6;            // Layer 6
-        public static int Player => 1 << 7;            // Layer 6
-        public static int Enemy => 1 << 8;            // Layer 6
+        public const string Player = "Player";
+        public const string Enemy = "Enemy";
     }
 }

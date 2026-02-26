@@ -38,7 +38,7 @@ public Animator anim { get; private set; }
         
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         HandleCollisionDetection();
         stateMachine.UpdateActiveState();
@@ -55,7 +55,7 @@ public Animator anim { get; private set; }
         HandleFlip(xVelocity);
     }
 
-    private void HandleFlip(float xVelocity)
+    public void HandleFlip(float xVelocity)
     {
         // if moving right and not facing right then want to flip transform
         // if moving left and facing right then we need to flip transform
