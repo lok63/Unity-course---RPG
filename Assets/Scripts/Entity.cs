@@ -44,9 +44,9 @@ public Animator anim { get; private set; }
         stateMachine.UpdateActiveState();
     }
     
-    public void CallAnimationTrigger()
+    public void CurrentStateAnimationTrigger()
     {
-        stateMachine.currentState.CallAnimationTrigger();
+        stateMachine.currentState.AnimationTrigger();
     }
 
     public void SetVelocity(float xVelocity, float yVelocity)
